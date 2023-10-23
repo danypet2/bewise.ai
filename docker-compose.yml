@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:15
+    container_name: db_app
+    env_file:
+      - .env-non-dev
+    ports:
+      - 5432:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+
+
+  app:
+    build:
+      context: .
+    env_file:
+      - .env-non-dev
+    container_name: bewise_test
+    command: bash -c 'alembic upgrade head && cd src && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000'
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    volumes:
+      - .:/bewise_app
+
+
+
+volumes:
+  db_data:
+
+
