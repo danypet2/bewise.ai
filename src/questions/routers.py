@@ -23,7 +23,7 @@ async def get_question(questions_num: int, session: AsyncSession = Depends(get_a
             query = select(question).order_by(desc(question.c.id)).limit(1)
             result = await session.execute(query)
             for i in data:
-                stmt = insert(question).values(id=i['id'],
+                stmt = insert(question).values(question_id=i['id'],
                                                text_question=i['question'],
                                                text_answer=i['answer'],
                                                date=i['created_at']
